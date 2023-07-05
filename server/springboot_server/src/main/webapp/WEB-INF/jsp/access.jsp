@@ -101,7 +101,7 @@
                     <td>
                         <div class="btn-group">
                             <button type="button" id="modity_btn"
-                                    onClick="window.open('/accessModity?empNo=${list.empNo}&username=${list.username}',
+                                    onClick="window.open('/accessModify?empNo=${list.empNo}&username=${list.username}',
                                             '_blank', 'width=500px,height=450px,toolbars=no,scrollbars=no'); return false;">
                                 <p class="modify">수정</p>
                             </button>

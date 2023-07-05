@@ -1,0 +1,1 @@
+INSERT INTO USERS(emp_no, username, password, in_time, out_time, user_type, token, nfc) VALUES('1234', 'Doe', '1234', '1234', '1234', '1234', '1234' , '1234')

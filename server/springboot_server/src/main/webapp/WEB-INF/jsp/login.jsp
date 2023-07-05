@@ -23,7 +23,7 @@
 <script>
     $(function () {
         var responseMessage = "<c:out value="${message}" />";
-        if (responseMessage != "") {
+        if (responseMessage !== "") {
             alert(responseMessage)
         }
     })
@@ -32,11 +32,11 @@
 <div class="login-page">
 
     <div class="form">
-        <img src="/asset/images/georlocklogo.png">
+        <img src="/asset/images/georlocklogo.png" />
         <%--로그인폼--%>
         <form class="login-form" name="login" action="login" method="post">
             <input type="text" placeholder="ID" name="empNo" class="inputcontrol"/>
-            <input type="password" placeholder="PASSWORD" name="userPw" class="inputcontrol"/>
+            <input type="password" placeholder="PASSWORD" name="password" class="inputcontrol"/>
             <div class="checkbox">
                 <label class="checklabel">
                     <input type="checkbox" name="autoLogin" class="inp_radio">자동 로그인

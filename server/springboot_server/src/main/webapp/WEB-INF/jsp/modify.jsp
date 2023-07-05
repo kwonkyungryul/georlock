@@ -108,7 +108,8 @@
     <form
             class="modify-form"
             name="modify"
-            action="accessUpdate"
+        <%-- TODO /access or access            --%>
+            action="access/update/${userId}"
             method="post"
     >
         사번 :
@@ -121,7 +122,6 @@
             <input type="time" name="outtime"/>
         </div>
 
-        <input type="hidden" name="empNo" value="${empNo}"/>
         <input type="submit" value="수정"/>
     </form>
 </main>
