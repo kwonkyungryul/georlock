@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Document</title>
+
+</head>
+
+<body>
+<header>
+    <p>
+        출입권한수정
+    </p>
+</header>
+
+<main>
+<!-- TODO /access or access -->
+    <form
+            class="modify-form"
+            name="modify"
+            th:action="@{/access/update/{userId}(userId=${userId})}"
+            method="post"
+    >
+        사번 :
+        <div class="jsp-div" th:text="${empNo}"></div>
+        이름 :
+        <div class="jsp-div" th:text="${username}"></div>
+        출입가능시간:
+        <div class="input-div">
+            <input type="time" name="inTime"/>
+            <input type="time" name="outTime"/>
+        </div>
+
+        <input type="submit" value="수정"/>
+    </form>
+</main>
+</body>
+</html>

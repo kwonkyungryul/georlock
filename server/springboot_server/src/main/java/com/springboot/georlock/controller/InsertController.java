@@ -21,7 +21,7 @@
 //    @RequestMapping("/insert_btn")      //등록 페이지 이동
 //    public ModelAndView insertForm() throws Exception {
 //        ModelAndView mav = new ModelAndView("insert");
-//        mav.addObject("empuser", insertService.empList());  //등록 되지 않은 회원 정보 조회
+//        mav.addObject("empUserList", insertService.empList());  //등록 되지 않은 회원 정보 조회
 //        return mav;
 //    }
 //

@@ -30,8 +30,8 @@ public class AccessController {
     @GetMapping({"/", ""})      //회원 정보(출입 권한) 관리 페이지 이동
     public ModelAndView access() {
         ModelAndView mav = new ModelAndView("access");
-        List<User> userlist = userService.findAll();      // 웹에 나타낼 회원 정보(출입 권한) 조회
-        mav.addObject("userlist", userlist);
+        List<User> userList = userService.findAll();      // 웹에 나타낼 회원 정보(출입 권한) 조회
+        mav.addObject("userList", userList);
         return mav;
     }
 

@@ -21,7 +21,7 @@
 //    public ModelAndView record() throws Exception {
 //        ModelAndView mav = new ModelAndView("record");
 //        List<Enteremp> list = recordService.getEnterEmp();   //출입 기록 조회
-//        mav.addObject("recordlist", list);
+//        mav.addObject("recordList", list);
 //        return mav;
 //    }
 //
@@ -30,7 +30,7 @@
 //    public ModelAndView recordSearch(Dates dates) throws Exception {
 //        ModelAndView mav = new ModelAndView("record");
 //        List<Enteremp> list = recordService.getRecordSearch(dates);  //출입 기록 검색
-//        mav.addObject("recordlist", list);
+//        mav.addObject("recordList", list);
 //        return mav;
 //    }
 //
