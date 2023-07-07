@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +7,28 @@
     <link rel="shortcut icon" th:href="@{/asset/images/favicon.ico}" type="images/x-icon"/>
     <link rel="stylesheet" th:href="@{/asset/css/access.css}"/>
     <title>출입권한설정</title>
+
+    <style>
+        .board_con1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px
+        }
+
+        .board_con1 a li {
+            padding: 4px 10px;
+            background-color: rgb(228, 234, 236);
+            margin: 0 1px;
+            cursor: pointer;
+            border-radius: 10px
+        }
+
+        .board_con1 a li.active {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 <!-- header -->
@@ -34,7 +56,7 @@
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/insert_btn}" title="insert">
+                    <a th:href="@{/save}" title="insert">
                         <span>출입권한등록</span>
                     </a>
                 </li>
@@ -51,9 +73,10 @@
 
         <!-- 검색창 -->
 
-        <form id="searchForm" th:action="@{/access/search}" method="post">
+        <form id="searchForm" th:action="@{/access}" method="get">
             <div class="search">
-                <input type="text" name="textSearch" class="search_txt" placeholder="Search..."/>
+                <input type="text" name="textSearch" class="search_txt" placeholder="Search..."
+                       th:value="${textSearch}"/>
                 <button type="submit" value="검색">
                     <i class="fas fa-search"></i>
                 </button>
@@ -77,52 +100,97 @@
                 <col width="40%"/>
                 <col width="20%"/>
             </colgroup>
+            <thead>
             <tr>
-                <thead>
                 <th>사번</th>
                 <th>이름</th>
                 <th>출입가능시간</th>
                 <th>수정/삭제</th>
-                </thead>
             </tr>
+            </thead>
 
-
-            <tr th:each="user : ${userList}">
+            <tbody>
+            <tr th:each="user : ${userPage}" style="border-bottom: 1px solid #ccc">
                 <td th:text="${user.empNo}"></td>
                 <td th:text="${user.username}"></td>
                 <td th:text="${user.inTime} + '~' + ${user.outTime}"></td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" id="modity_btn"
-                                onClick="window.open('/accessModify?empNo=${list.empNo}&username=${list.username}',
-                                        '_blank', 'width=500px,height=450px,toolbars=no,scrollbars=no'); return false;">
+                        <button type="button" id="modify_btn" th:onclick="'openNewWindow(\'' + @{/access/modify/{id}(id=${user.id})} + '\')'">
                             <p class="modify">수정</p>
                         </button>
-                        <button type="submit" id="delete_btn" onclick="view_confirm(${user.empNo})">
+                        <button type="button" id="delete_btn" th:onclick="'view_confirm(\'' + ${user.id} + '\')'">
                             <p class="delete">삭제</p>
                         </button>
                     </div>
                 </td>
             </tr>
-
+            </tbody>
 
         </table>
-        <a class="upscroll" href="#" title="맨 위로"><i class="fas fa-angle-double-up" fa-sm></i></a>
+        <a class="upscroll" href="#" title="맨 위로"><i class="fas fa-angle-double-up fa-sm"></i></a>
+
+        <div>
+            <ul class="board_con1 f_s0 fw_pl">
+
+                <a th:if="${!userPage.isFirst()}"
+                   th:href="@{/access/(page=0,size=${userPage.getPageable().getPageSize()})}">
+                    <li><<</li>
+                </a>
+
+                <a th:if="${prev}"
+                   th:href="@{/access/(page=${((userPage.getPageable().getPageNumber() / basePage) - 1) * basePage},size=${userPage.getPageable().getPageSize()})}">
+                    <li><</li>
+                </a>
+
+                <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+                   th:href="@{/access/(page=${pageNum}-1,size=${userPage.getPageable().getPageSize()})}">
+                    <li th:class="${pageNum} == ${userPage.getPageable().getPageNumber() + 1} ? 'active' : ''"
+                        th:text="${pageNum}"></li>
+                </a>
+
+                <a th:if="${next}"
+                   th:href="@{/access/(page=${((userPage.getPageable().getPageNumber() / basePage) + 1) * basePage},size=${userPage.getPageable().getPageSize()})}">
+                    <li>></li>
+                </a>
+
+                <a th:if="${!userPage.isLast()}"
+                   th:href="@{/access/(page=${userPage.getTotalPages() -1},size=${userPage.getPageable().getPageSize()})}">
+                    <li>>></li>
+                </a>
+            </ul>
+        </div>
+
     </article>
-
-    <!-- navside -->
-
 </div>
 
+<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{https://kit.fontawesome.com/a962b14940.js}" crossorigin="anonymous"></script>
 
-<script type="text/javascript">
-    function view_confirm(empNo) {
-        var ans = confirm("삭제 하시겠습니까?");
+<script th:inline="javascript">
+    function view_confirm(userId) {
+        console.log(userId);
+        const ans = confirm("삭제 하시겠습니까?");
         if (ans) {
-            location.href = "/access/delete?empNo=" + empNo;
+            $.ajax({
+                method: "DELETE",
+                url: "/access/delete/" + userId,
+            })
+            .done(function (msg) {
+                alert(msg);
+                location.reload();
+            })
+            .fail(function (msg) {
+                alert(msg);
+            })
+
         }
     }
+
+    function openNewWindow(url) {
+        window.open(url, '_blank', 'width=500px,height=450px,toolbars=no,scrollbars=no');
+    }
+
 </script>
 </body>
 </html>

@@ -5,7 +5,12 @@ import com.springboot.georlock.entity.User;
 import com.springboot.georlock.exception.CustomException;
 import com.springboot.georlock.request.UserUpdateRequest;
 import com.springboot.georlock.service.UserService;
+import com.springboot.georlock.util.PageUtil;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -28,38 +34,55 @@ public class AccessController {
     }
 
     @GetMapping({"/", ""})      //회원 정보(출입 권한) 관리 페이지 이동
-    public ModelAndView access() {
+    public ModelAndView access(
+            @PageableDefault(sort = "id" ,direction = Sort.Direction.DESC, size = 10)
+            Pageable pageable,
+            @RequestParam(defaultValue = "")
+            String textSearch
+    ) {
         ModelAndView mav = new ModelAndView("access");
-        List<User> userList = userService.findAll();      // 웹에 나타낼 회원 정보(출입 권한) 조회
-        mav.addObject("userList", userList);
+        Page<User> userPage = null;
+        if (!textSearch.equals("")) {
+            userPage = userService.search(pageable, textSearch);
+        } else {
+            userPage = userService.findAll(pageable);      // 웹에 나타낼 회원 정보(출입 권한) 조회
+        }
+        mav.addObject("userPage", userPage);
+        mav.addObject("textSearch", textSearch);
+        PageUtil.set(pageable, mav, userPage.getTotalPages());
+
         return mav;
     }
 
-// TODO 주석
+    @DeleteMapping("/delete/{id}")      //회원 정보(출입 권한) 삭제 기능
+    public @ResponseBody String accessDelete(@PathVariable Long id) throws Exception {
 
-//    @RequestMapping("/search")      // 회원 정보(출입 권한 관리) 검색 기능(사번 or 이름)
-//    public ModelAndView accessSearch(String textSearch) throws Exception {
-//        ModelAndView mav = new ModelAndView("access");
-//        List<User> userlist = userService.accessSearch(textSearch); // 웹에 나타낼 검색된 회원 정보(출입 권한) 조회
-//        mav.addObject("userlist", userlist);
-//        return mav;
-//    }
+        Optional<User> optionalUser = userService.getUser(id);  //회원 정보 조회
+        if (optionalUser.isEmpty()) {
+            throw new CustomException("해당 회원이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
 
-// TODO 주석
+        User user = optionalUser.get();
 
-//    @RequestMapping("/delete")      //회원 정보(출입 권한) 삭제 기능
-//    public String accessDelete(@RequestParam String empNo) throws Exception {
-//        userService.accessDelete(empNo);  //회원 정보 삭제
-//        return "redirect:access";
-//    }
+        userService.delete(user);  //회원 정보 삭제
+        return "삭제가 완료되었습니다.";
+    }
 
 
-    @GetMapping("/modify")     //출입 시간 수정 페이지 이동
-    public ModelAndView accessModify(@RequestParam String empNo, @RequestParam String username) throws Exception {
+    @GetMapping("/modify/{id}")     //출입 시간 수정 페이지 이동
+    public ModelAndView accessModify(@PathVariable Long id) throws Exception {
         ModelAndView mav = new ModelAndView("modify");
+        Optional<User> optionalUser = userService.getUser(id);
+        if (optionalUser.isEmpty()) {
+            throw new CustomException("해당 회원이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = optionalUser.get();
+
         // TODO UserId도 model에 주입해야 함.
-        mav.addObject("empNo", empNo);
-        mav.addObject("username", username);
+        mav.addObject("empNo", user.getEmpNo());
+        mav.addObject("username", user.getUsername());
+        mav.addObject("userId", user.getId());
         return mav;
     }
 

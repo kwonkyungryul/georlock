@@ -2,9 +2,12 @@ package com.springboot.georlock.service;
 
 
 import com.springboot.georlock.entity.User;
+import com.springboot.georlock.enums.UserStatus;
 import com.springboot.georlock.repository.UserRepository;
 import com.springboot.georlock.request.UserUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,44 +17,35 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class UserService {
-
-//    @Autowired
-//    AccessMapper accessMapper;
-
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-//    public List<User> getAll() throws Exception {
-//        return accessMapper.getAll();
-//    }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAllByStatus(pageable, UserStatus.ACTIVE);
     }
 
-//    public void accessUpdate(User login) throws Exception {
-//        accessMapper.update(login);
-//    }
+//    public
 
     @Transactional
     public void update(User user, UserUpdateRequest request) {
-        user.setInTime(request.intTime());
+        user.setInTime(request.inTime());
         user.setOutTime(request.outTime());
         userRepository.save(user);
     }
 
-//    @Transactional
-//    public void accessDelete(String empNo) throws Exception {
-//        accessMapper.delete(empNo);
-//    }
+    @Transactional
+    public void delete(User user) throws Exception {
+        user.setStatus(UserStatus.DELETE);
+        userRepository.save(user);
+    }
 
-//    public List<User> accessSearch(String textSearch) throws Exception {
-//        String Search = "%" + textSearch + "%";
-//        return accessMapper.Search(Search);
-//    }
+    public Page<User> search(Pageable pageable, String textSearch) {
+        return userRepository.findByEmpNoContainingOrUsernameContainingAndStatus(pageable, textSearch, textSearch, UserStatus.ACTIVE);
+    }
 
     public Optional<User> getUser(Long id) {
         return userRepository.findById(id);

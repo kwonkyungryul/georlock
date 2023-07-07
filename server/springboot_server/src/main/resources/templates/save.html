@@ -78,29 +78,32 @@
                 <col width="40%"/>
                 <col width="20%"/>
             </colgroup>
-            <tr>
-                <thead>
-                <th>사번</th>
-                <th>이름</th>
-                <th>등록</th>
-                </thead>
-            </tr>
+            <thead>
+                <tr>
+                    <th>사번</th>
+                    <th>이름</th>
+                    <th>등록</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
 
             <tr th:each="empUser : ${empUserList}">
-                <td th:text="${empUser.empNo}"></td>
-                <td th:text="${empUser.username}"></td>
+<!--                <td th:text="${empUser.empNo}"></td>-->
+                <td th:text="1"></td>
+<!--                <td th:text="${empUser.username}"></td>-->
+                <td th:text="2"></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" id="modity_btn" >
                             <p class="modify">
-                                <a th:href="@{/accessInsert?empNo={empNo}&username={username}(empNo=${empUser.empNo}, username=${empUser.username})}">등록</a>
+<!--                                <a th:href="@{/accessInsert?empNo={empNo}&username={username}(empNo=${empUser.empNo}, username=${empUser.username})}">등록</a>-->
+                                <a >등록</a>
                             </p>
                         </button>
                     </div>
                 </td>
+                <td></td>
             </tr>
-
-
         </table>
         <a class="upscroll" href="#" title="맨 위로"><i class="fas fa-angle-double-up" fa-sm></i></a>
     </article>
