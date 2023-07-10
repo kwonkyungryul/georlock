@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,7 +24,7 @@ public class UserService {
 
 
     public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAllByStatus(pageable, UserStatus.ACTIVE);
+        return userRepository.findAllByStatusNot(pageable, UserStatus.DELETE);
     }
 
 //    public
@@ -34,6 +33,7 @@ public class UserService {
     public void update(User user, UserUpdateRequest request) {
         user.setInTime(request.inTime());
         user.setOutTime(request.outTime());
+        user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);
     }
 
@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public Page<User> search(Pageable pageable, String textSearch) {
-        return userRepository.findByEmpNoContainingOrUsernameContainingAndStatus(pageable, textSearch, textSearch, UserStatus.ACTIVE);
+        return userRepository.findByEmpNoContainingOrUsernameContainingAndStatusNot(pageable, textSearch, textSearch, UserStatus.DELETE);
     }
 
     public Optional<User> getUser(Long id) {

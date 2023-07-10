@@ -113,15 +113,24 @@
             <tr th:each="user : ${userPage}" style="border-bottom: 1px solid #ccc">
                 <td th:text="${user.empNo}"></td>
                 <td th:text="${user.username}"></td>
-                <td th:text="${user.inTime} + '~' + ${user.outTime}"></td>
+
+                <td th:text="${user.status.toString().equals('WAIT')} ? '출입가능시간을 등록해주세요' : ${user.inTime} + '~' + ${user.outTime}"></td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" id="modify_btn" th:onclick="'openNewWindow(\'' + @{/access/modify/{id}(id=${user.id})} + '\')'">
-                            <p class="modify">수정</p>
-                        </button>
-                        <button type="button" id="delete_btn" th:onclick="'view_confirm(\'' + ${user.id} + '\')'">
-                            <p class="delete">삭제</p>
-                        </button>
+                        <div th:if="${user.status.toString().equals('ACTIVE')}">
+                            <button type="button" class="modify" id="modify_btn" th:onclick="'openNewWindow(\'' + @{/access/modify/{id}(id=${user.id})} + '\')'">
+                                수정
+                            </button>
+                            <button type="button" class="delete" id="delete_btn" th:onclick="'view_confirm(\'' + ${user.id} + '\')'">
+                                삭제
+                            </button>
+                        </div>
+                        <div th:if="${user.status.toString().equals('WAIT')}">
+<!--                            <button type="button" class="modify" id="modify_bt" th:onclick="'openNewWindow(\'' + @{/save/permission/insert?empNo={empNo}&username={username}(empNo=${user.empNo}, username=${user.username})} + '\')'">-->
+                            <button type="button" class="modify" id="modify_btn" th:onclick="'openNewWindow(\'' + @{/access/modify/{id}(id=${user.id})} + '\')'">
+                                등록
+                            </button>
+                        </div>
                     </div>
                 </td>
             </tr>

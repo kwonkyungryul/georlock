@@ -3,13 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="/asset/images/favicon.ico" type="images/x-icon"/>
-    <link rel="stylesheet" href="/asset/css/access.css"/>
+    <link rel="stylesheet" th:href="@{/asset/css/save.css}"/>
     <title>출입권한등록</title>
     <script
             th:src="@{https://kit.fontawesome.com/a962b14940.js}"
             crossorigin="anonymous"
     ></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        .board_con1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px
+        }
+
+        .board_con1 a li {
+            padding: 4px 10px;
+            background-color: rgb(228, 234, 236);
+            margin: 0 1px;
+            cursor: pointer;
+            border-radius: 10px
+        }
+
+        .board_con1 a li.active {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 <!-- header -->
@@ -37,12 +59,12 @@
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/save}" title="insert">
+                    <a th:href="@{/save}" title="save">
                         <span>출입권한등록</span>
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/access}"title="access">
+                    <a th:href="@{/access}" title="access">
                         <span>출입권한설정</span>
                     </a>
                 </li>
@@ -73,10 +95,9 @@
         <!-- 페이징 -->
         <table class="table">
             <colgroup>
-                <col width="20%"/>
-                <col width="20%"/>
+                <col width="30%"/>
+                <col width="30%"/>
                 <col width="40%"/>
-                <col width="20%"/>
             </colgroup>
             <thead>
                 <tr>
@@ -87,10 +108,8 @@
             </thead>
 
             <tr th:each="empUser : ${empUserList}">
-<!--                <td th:text="${empUser.empNo}"></td>-->
-                <td th:text="1"></td>
-<!--                <td th:text="${empUser.username}"></td>-->
-                <td th:text="2"></td>
+                <td th:text="${empUser.empNo}"></td>
+                <td th:text="${empUser.username}"></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" id="modity_btn" >
@@ -104,6 +123,39 @@
             </tr>
         </table>
         <a class="upscroll" href="#" title="맨 위로"><i class="fas fa-angle-double-up" fa-sm></i></a>
+
+        <div>
+            <ul class="board_con1 f_s0 fw_pl">
+
+                <a th:if="${!empUserList.isFirst()}"
+                   th:href="@{/save/(page=0,size=${empUserList.getPageable().getPageSize()})}">
+                    <li><<</li>
+                </a>
+
+                <a th:if="${prev}"
+                   th:href="@{/save/(page=${((empUserList.getPageable().getPageNumber() / basePage) - 1) * basePage},size=${empUserList.getPageable().getPageSize()})}">
+                    <li><</li>
+                </a>
+
+                <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+                   th:href="@{/save/(page=${pageNum}-1,size=${empUserList.getPageable().getPageSize()})}">
+                    <li th:class="${pageNum} == ${empUserList.getPageable().getPageNumber() + 1} ? 'active' : ''"
+                        th:text="${pageNum}"></li>
+                </a>
+
+                <a th:if="${next}"
+                   th:href="@{/save/(page=${((empUserList.getPageable().getPageNumber() / basePage) + 1) * basePage},size=${empUserList.getPageable().getPageSize()})}">
+                    <li>></li>
+                </a>
+
+                <a th:if="${!empUserList.isLast()}"
+                   th:href="@{/save/(page=${empUserList.getTotalPages() -1},size=${empUserList.getPageable().getPageSize()})}">
+                    <li>>></li>
+                </a>
+            </ul>
+        </div>
+
+
     </article>
 
     <!-- navside -->

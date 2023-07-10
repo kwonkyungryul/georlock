@@ -181,7 +181,11 @@ table thead th {
     font-family: "Noto Sans KR", sans-serif;
 }
 
-button .modify {
+.btn-group {
+    padding: 10px 0;
+}
+
+button.modify {
     background-color: #2497f4;
     border-radius: 8px;
     border: 1px solid #2497f4;
@@ -192,7 +196,7 @@ button .modify {
     font-size: 15px;
 }
 
-button .delete {
+button.delete {
     background-color: red;
     border-radius: 8px;
     border: 1px solid red;
