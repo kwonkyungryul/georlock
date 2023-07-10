@@ -35,7 +35,7 @@ public class AccessController {
 
     @GetMapping({"/", ""})      //회원 정보(출입 권한) 관리 페이지 이동
     public ModelAndView access(
-            @PageableDefault(sort = "id" ,direction = Sort.Direction.DESC, size = 10)
+            @PageableDefault(sort = "id" , direction = Sort.Direction.DESC, size = 10)
             Pageable pageable,
             @RequestParam(defaultValue = "")
             String textSearch
@@ -79,7 +79,6 @@ public class AccessController {
 
         User user = optionalUser.get();
 
-        // TODO UserId도 model에 주입해야 함.
         mav.addObject("empNo", user.getEmpNo());
         mav.addObject("username", user.getUsername());
         mav.addObject("userId", user.getId());

@@ -1,31 +1,42 @@
-//package com.springboot.georlock.service;
-//
-//import com.springboot.georlock.dto.Dates;
-//import com.springboot.georlock.dto.Enteremp;
-//import com.springboot.georlock.mapper.RecordMapper;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.List;
-//
-//@Service
-//public class RecordService {
+package com.springboot.georlock.service;
+
+import com.springboot.georlock.dto.Dates;
+import com.springboot.georlock.dto.Enteremp;
+import com.springboot.georlock.entity.EnterUser;
+import com.springboot.georlock.enums.UserStatus;
+import com.springboot.georlock.repository.EnterUserRepository;
+import com.springboot.georlock.util.DateTimeConverter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class EnterUserService {
 //    @Autowired
 //    RecordMapper recordMapper;
-//
-//
-//    public List<Enteremp> getEnterEmp() throws Exception {
-//        List<Enteremp> record = recordMapper.getEnterempAll();
-//
-//        for (int i = 0; i < record.size(); i++) {
-//            Enteremp emp = new Enteremp();
-//            emp = record.get(i);
-//            emp.setIntime(emp.getIntime().substring(0, 4) + "-" + emp.getIntime().substring(4, 6) + "-" + emp.getIntime().substring(6, 8) + " " + emp.getIntime().substring(8, 10) + ":" + emp.getIntime().substring(10, 12));
-//            record.set(i, emp);
-//        }
-//        return record;
-//    }
-//
+
+    private final EnterUserRepository enterUserRepository;
+
+    public EnterUserService(EnterUserRepository enterUserRepository) {
+        this.enterUserRepository = enterUserRepository;
+    }
+
+    public Page<EnterUser> getEnterEmp(Pageable pageable) throws Exception {
+
+        Page<EnterUser> enterUserPage = enterUserRepository.findAllByUser_Status(pageable, UserStatus.ACTIVE);
+
+        enterUserPage
+                .forEach(
+                        enterUser -> enterUser.setInTime(
+                                DateTimeConverter.stringToLocalDateTime(enterUser.getInTime().toString())
+                        )
+                );
+
+        return enterUserPage;
+    }
+
 //    public List<Enteremp> getRecordSearch(Dates dates) throws Exception {
 //        final String DATE_MAX = "999999999999";
 //        final String DATE_MIN = "000000000000";
@@ -55,4 +66,4 @@
 //
 //        return record;
 //    }
-//}
+}

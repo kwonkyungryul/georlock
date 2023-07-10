@@ -6,6 +6,28 @@
     <link rel="stylesheet" href="/asset/css/record.css"/>
     <title>출입기록</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        .board_con1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px
+        }
+
+        .board_con1 a li {
+            padding: 4px 10px;
+            background-color: rgb(228, 234, 236);
+            margin: 0 1px;
+            cursor: pointer;
+            border-radius: 10px
+        }
+
+        .board_con1 a li.active {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 <!-- header -->
@@ -34,12 +56,12 @@
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/insert_btn}" title="insert">
+                    <a th:href="@{/save}" title="insert">
                         <span>출입권한등록</span>
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/access}" title="access">
+                    <a th:href="@{/record}" title="record">
                         <span>출입권한설정</span>
                     </a>
                 </li>
@@ -80,16 +102,51 @@
 
 
             <tr th:each="record : ${recordList}">
-                <td th:text="${record.count}"></td>
+<!--                <td th:text="${record.count}"></td>-->
+                <td th:text="record.count"></td>
                 <td th:text="${record.inTime}"></td>
-                <td th:text="${record.empNo}"></td>
-                <td th:text="${record.username}"></td>
+                <td th:text="${record.user.empNo}"></td>
+                <td th:text="${record.user.username}"></td>
             </tr>
 
 
         </table>
     <!-- 페이징 -->
         <a class="upscroll" href="#" title="맨 위로"><i class="fas fa-angle-double-up" fa-sm></i></a>
+
+
+        <div>
+            <ul class="board_con1 f_s0 fw_pl">
+
+                <a th:if="${!recordList.isFirst()}"
+                   th:href="@{/record/(page=0,size=${recordList.getPageable().getPageSize()})}">
+                    <li><<</li>
+                </a>
+
+                <a th:if="${prev}"
+                   th:href="@{/record/(page=${((recordList.getPageable().getPageNumber() / basePage) - 1) * basePage},size=${recordList.getPageable().getPageSize()})}">
+                    <li><</li>
+                </a>
+
+                <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+                   th:href="@{/record/(page=${pageNum}-1,size=${recordList.getPageable().getPageSize()})}">
+                    <li th:class="${pageNum} == ${recordList.getPageable().getPageNumber() + 1} ? 'active' : ''"
+                        th:text="${pageNum}"></li>
+                </a>
+
+                <a th:if="${next}"
+                   th:href="@{/record/(page=${((recordList.getPageable().getPageNumber() / basePage) + 1) * basePage},size=${recordList.getPageable().getPageSize()})}">
+                    <li>></li>
+                </a>
+
+                <a th:if="${!recordList.isLast()}"
+                   th:href="@{/record/(page=${recordList.getTotalPages() -1},size=${recordList.getPageable().getPageSize()})}">
+                    <li>>></li>
+                </a>
+            </ul>
+        </div>
+
+
     </article>
 
     <!-- navside -->

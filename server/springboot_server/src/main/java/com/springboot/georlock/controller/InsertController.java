@@ -1,30 +1,30 @@
 package com.springboot.georlock.controller;
 
-import com.springboot.georlock.dto.Login;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.springboot.georlock.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequestMapping("/save")
 public class InsertController {
-    //등록 컨트롤러
 
-//    @Autowired
-//    InsertService insertService;
-//    @Autowired
-//    LoginService loginService;
+    private final UserService userService;
 
-    @RequestMapping("")      //등록 페이지 이동
+    public InsertController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @RequestMapping("")
     public ModelAndView saveForm() {
         ModelAndView mav = new ModelAndView("save");
         List<Integer> list = Arrays.asList(1, 2);
+
+
+
         mav.addObject("empUserList", list);  //등록 되지 않은 회원 정보 조회
         return mav;
     }
